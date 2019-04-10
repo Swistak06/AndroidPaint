@@ -6,14 +6,27 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
-import com.getbase.floatingactionbutton.AddFloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
 
 
 class MainActivity : AppCompatActivity() {
+
+
+    var dialogClickListener: DialogInterface.OnClickListener =
+        DialogInterface.OnClickListener { dialog, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    paintView.clear()
+                }
+
+                DialogInterface.BUTTON_NEGATIVE -> {
+                }
+            }
+        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +37,16 @@ class MainActivity : AppCompatActivity() {
         paint.init(metrics)
         Log.d("kappa","Clear button clicked")
         print("alfa i omega")
+        UndoButton.setOnClickListener {
+            paintView.undo()
+            //if(paintView.getPaths().size == 0)
+                //UndoButton.setIcon(R.drawable.undo_grey)
+        }
+        ClearButton.setOnClickListener{
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show()
+        }
 
     }
 
@@ -59,4 +82,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 }
