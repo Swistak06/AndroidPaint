@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="normal" android:id="@+id/normal"/>
+    <item android:title="emboss" android:id="@+id/emboss"/>
+    <item android:title="blur" android:id="@+id/blur"/>
+    <item android:title="clear" android:id="@+id/clear"/>
+    <item android:title="undo" android:id="@+id/undo"/>
+</menu>
