@@ -15,6 +15,13 @@ import android.view.MotionEvent
 import android.view.View
 
 import java.util.ArrayList
+import android.content.ContextWrapper
+import android.app.Activity
+import android.support.v7.app.AppCompatActivity
+
+
+
+
 
 
 class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
@@ -33,6 +40,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var mBitmap: Bitmap? = null
     private var mCanvas: Canvas? = null
     private val mBitmapPaint = Paint(Paint.DITHER_FLAG)
+    private var activity : MainActivity? = null
 
     init {
         mPaint = Paint()
@@ -90,7 +98,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         invalidate()
     }
 
-    override fun onDraw(canvas: Canvas) {
+    override fun onDraw(canvas: Canvas){
         canvas.save()
         mCanvas!!.drawColor(backgroundCol)
 
@@ -105,7 +113,6 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 mPaint.maskFilter = mBlur
 
             mCanvas!!.drawPath(fp.path, mPaint)
-
         }
 
         canvas.drawBitmap(mBitmap!!, 0f, 0f, mBitmapPaint)
@@ -113,6 +120,8 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     private fun touchStart(x: Float, y: Float) {
+        activity!!.changeUndoArrowColor()
+        activity!!.hideMenu()
         mPath = Path()
         val fp = FingerPath(currentColor, emboss, blur, strokeWidth, mPath!!)
         paths.add(fp)
@@ -170,5 +179,13 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     public fun getPaths(): ArrayList<FingerPath>{
         return paths;
+    }
+
+    fun setCurrentActivity(_activity: MainActivity) {
+        this.activity = _activity
+    }
+
+    fun getCurrentActivity(): Activity? {
+        return activity
     }
 }

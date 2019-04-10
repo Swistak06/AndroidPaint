@@ -14,6 +14,14 @@ import android.support.v7.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
 
+     fun changeUndoArrowColor(){
+        if(paintView.getPaths().size  == 0)
+            UndoButton.setIcon(R.drawable.undo)
+    }
+
+    fun hideMenu(){
+        right_menu.collapse()
+    }
 
     var dialogClickListener: DialogInterface.OnClickListener =
         DialogInterface.OnClickListener { dialog, which ->
@@ -34,13 +42,14 @@ class MainActivity : AppCompatActivity() {
         val paint = paintView
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
+        paintView.setCurrentActivity(this)
         paint.init(metrics)
         Log.d("kappa","Clear button clicked")
         print("alfa i omega")
         UndoButton.setOnClickListener {
             paintView.undo()
-            //if(paintView.getPaths().size == 0)
-                //UndoButton.setIcon(R.drawable.undo_grey)
+            if(paintView.getPaths().size == 0)
+                UndoButton.setIcon(R.drawable.undo_grey)
         }
         ClearButton.setOnClickListener{
             val builder = AlertDialog.Builder(this)
