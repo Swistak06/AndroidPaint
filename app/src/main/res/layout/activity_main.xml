@@ -48,7 +48,7 @@
                 app:fab_colorNormal="@color/white"
                 app:fab_size="mini"
                 app:fab_colorPressed="@color/white_pressed"
-                android:id="@+id/ColorPick"
+                android:id="@+id/ColorPickButton"
                 app:fab_icon="@drawable/palette"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"

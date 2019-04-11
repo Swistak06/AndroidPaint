@@ -11,7 +11,6 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.text.InputType
@@ -93,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         EraserBrushButton.setOnClickListener {
             paintView.switchBetweenBrushAndEraser()
         }
-        ColorPick.setOnClickListener {
+        ColorPickButton.setOnClickListener {
             openColorPicker()
         }
     }
