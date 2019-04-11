@@ -1,5 +1,6 @@
 package com.swistak.androidpaint
 
+import android.Manifest
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -9,14 +10,30 @@ import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.DialogInterface
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
+import android.text.InputType
+import android.widget.EditText
+
+
 
 
 class MainActivity : AppCompatActivity() {
 
-     fun changeUndoArrowColor(){
+    val REQUEST_WRITE_EXTERNAL = 1
+
+
+    fun changeUndoArrowColor(){
         if(paintView.getPaths().size  == 0)
             UndoButton.setIcon(R.drawable.undo)
+    }
+
+    fun switchBrushAndEraserIcons( isEraserEnabled : Boolean){
+        if(isEraserEnabled)
+            EraserBrushButton.setIcon(R.drawable.brush)
+        else
+            EraserBrushButton.setIcon(R.drawable.eraser)
     }
 
     fun hideMenu(){
@@ -28,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     paintView.clear()
+                    UndoButton.setIcon(R.drawable.undo_grey)
                 }
 
                 DialogInterface.BUTTON_NEGATIVE -> {
@@ -44,8 +62,10 @@ class MainActivity : AppCompatActivity() {
         windowManager.defaultDisplay.getMetrics(metrics)
         paintView.setCurrentActivity(this)
         paint.init(metrics)
-        Log.d("kappa","Clear button clicked")
-        print("alfa i omega")
+        setUpButtonListeners()
+    }
+
+    private fun setUpButtonListeners(){
         UndoButton.setOnClickListener {
             paintView.undo()
             if(paintView.getPaths().size == 0)
@@ -56,8 +76,21 @@ class MainActivity : AppCompatActivity() {
             builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show()
         }
-
+        SaveButton.setOnClickListener {
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_WRITE_EXTERNAL
+                )
+            }
+            showSavingFileDialog()
+        }
+        EraserBrushButton.setOnClickListener {
+            paintView.switchBetweenBrushAndEraser()
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -92,5 +125,28 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    fun showSavingFileDialog(){
+        var fileName: String
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("File name")
 
+
+        val input = EditText(this)
+
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(input)
+
+        builder.setPositiveButton(
+            "OK"
+        ) {
+                _, _ -> fileName = input.text.toString()
+                paintView.saveAsImage(fileName)
+            Toast.makeText(this,"Save completed",Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton(
+            "Cancel"
+        ) { dialog, which -> dialog.cancel() }
+
+        builder.show()
+    }
 }

@@ -17,11 +17,18 @@ import android.view.View
 import java.util.ArrayList
 import android.content.ContextWrapper
 import android.app.Activity
+import android.os.Environment
 import android.support.v7.app.AppCompatActivity
-
-
-
-
+import java.io.File.separator
+import java.nio.file.Files.exists
+import android.os.Environment.getExternalStorageDirectory
+import android.os.Environment.MEDIA_MOUNTED
+import java.io.File
+import java.io.FileOutputStream
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+import java.io.OutputStream
+import java.lang.Exception
 
 
 class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
@@ -41,6 +48,8 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var mCanvas: Canvas? = null
     private val mBitmapPaint = Paint(Paint.DITHER_FLAG)
     private var activity : MainActivity? = null
+    private var isEraserEnabled = false
+    private var colorOfBrush = Color.RED
 
     init {
         mPaint = Paint()
@@ -65,6 +74,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mCanvas = Canvas(mBitmap!!)
 
         currentColor = DEFAULT_COLOR
+        colorOfBrush = currentColor
         strokeWidth = BRUSH_SIZE
     }
 
@@ -177,7 +187,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         private val TOUCH_TOLERANCE = 4f
     }
 
-    public fun getPaths(): ArrayList<FingerPath>{
+    fun getPaths(): ArrayList<FingerPath>{
         return paths;
     }
 
@@ -187,5 +197,43 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun getCurrentActivity(): Activity? {
         return activity
+    }
+
+    fun saveAsImage(filename : String){
+
+        var bitmap = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val dir = activity!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        if(!dir.exists()){
+            dir.mkdirs()
+        }
+        val output = File(dir,"$filename.jpg")
+        var os : OutputStream? = null
+
+        try{
+            os = FileOutputStream(output)
+            this.draw(canvas)
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,os)
+
+            os.flush()
+            os.close()
+        }
+        catch(e : Exception){
+            e.printStackTrace()
+        }
+
+
+    }
+
+    fun switchBetweenBrushAndEraser(){
+        if(!isEraserEnabled){
+            currentColor = backgroundCol
+            isEraserEnabled = true
+        }
+        else{
+            currentColor = colorOfBrush
+            isEraserEnabled = false
+        }
+        activity!!.switchBrushAndEraserIcons(isEraserEnabled)
     }
 }
