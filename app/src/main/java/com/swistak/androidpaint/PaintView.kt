@@ -236,4 +236,12 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
         activity!!.switchBrushAndEraserIcons(isEraserEnabled)
     }
+
+    fun getCurrentBrushColor() : Int{
+        return currentColor
+    }
+
+    fun setBrushColor(color : Int) {
+        currentColor = color
+    }
 }

@@ -11,10 +11,14 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.text.InputType
 import android.widget.EditText
+import yuku.ambilwarna.AmbilWarnaDialog
+
+
 
 
 
@@ -89,6 +93,9 @@ class MainActivity : AppCompatActivity() {
         EraserBrushButton.setOnClickListener {
             paintView.switchBetweenBrushAndEraser()
         }
+        ColorPick.setOnClickListener {
+            openColorPicker()
+        }
     }
 
 
@@ -148,5 +155,18 @@ class MainActivity : AppCompatActivity() {
         ) { dialog, which -> dialog.cancel() }
 
         builder.show()
+    }
+
+    fun openColorPicker() {
+        val colorPicker = AmbilWarnaDialog(this, paintView.getCurrentBrushColor(), object : AmbilWarnaDialog.OnAmbilWarnaListener {
+            override fun onCancel(dialog: AmbilWarnaDialog) {
+
+            }
+
+            override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
+                paintView.setBrushColor(color)
+            }
+        })
+        colorPicker.show()
     }
 }
