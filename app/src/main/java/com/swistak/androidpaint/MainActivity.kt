@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
 
     fun switchBrushAndEraserIcons( isEraserEnabled : Boolean){
         if(isEraserEnabled)
-            EraserBrushButton.setIcon(R.drawable.brush)
-        else
             EraserBrushButton.setIcon(R.drawable.eraser)
+        else
+            EraserBrushButton.setIcon(R.drawable.brush)
     }
 
     fun hideMenu(){
@@ -131,11 +131,10 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun showSavingFileDialog(){
+    private fun showSavingFileDialog(){
         var fileName: String
         val builder = AlertDialog.Builder(this)
         builder.setTitle("File name")
-
 
         val input = EditText(this)
 
@@ -156,10 +155,9 @@ class MainActivity : AppCompatActivity() {
         builder.show()
     }
 
-    fun openColorPicker() {
+    private fun openColorPicker() {
         val colorPicker = AmbilWarnaDialog(this, paintView.getCurrentBrushColor(), object : AmbilWarnaDialog.OnAmbilWarnaListener {
             override fun onCancel(dialog: AmbilWarnaDialog) {
-
             }
 
             override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
@@ -168,4 +166,6 @@ class MainActivity : AppCompatActivity() {
         })
         colorPicker.show()
     }
+
+
 }

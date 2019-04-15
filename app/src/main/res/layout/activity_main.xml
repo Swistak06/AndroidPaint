@@ -40,7 +40,9 @@
                 android:layout_height="wrap_content"
                 app:fab_colorNormal="@color/white"
                 app:fab_colorPressed="@color/white_pressed"
-                android:id="@+id/EraserBrushButton" app:fab_icon="@drawable/eraser" app:fab_size="mini"/>
+                android:id="@+id/EraserBrushButton"
+                app:fab_icon="@drawable/brush"
+                app:fab_size="mini"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
