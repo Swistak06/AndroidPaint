@@ -1,26 +1,21 @@
 package com.swistak.androidpaint
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.InputType
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.appcompat.app.AlertDialog
-import android.text.InputType
-import android.view.View
 import android.widget.EditText
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import kotlinx.android.synthetic.main.activity_dialog.view.*
+import kotlinx.android.synthetic.main.activity_main.*
 import yuku.ambilwarna.AmbilWarnaDialog
-
-
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,11 +30,17 @@ class MainActivity : AppCompatActivity() {
             UndoButton.setIcon(R.drawable.undo)
     }
 
-    fun switchBrushAndEraserIcons( isEraserEnabled : Boolean){
+    fun switchBrushAndEraser(isEraserEnabled : Boolean){
         if(isEraserEnabled)
             EraserBrushButton.setIcon(R.drawable.eraser)
         else
             EraserBrushButton.setIcon(R.drawable.brush)
+    }
+
+    fun disableBrushEffects(){
+        embossMenuItem.isChecked = false
+        blurMenuItem.isChecked = false
+        paintView.normal()
     }
 
     fun hideMenu(){
@@ -115,6 +116,10 @@ class MainActivity : AppCompatActivity() {
         ColorPickButton.setOnClickListener {
             openColorPicker()
         }
+
+        BrushSizeButton.setOnClickListener{
+            showBrushSizeDialog()
+        }
     }
 
 
@@ -129,9 +134,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.normal -> {
-                paintView.normal()
-                embossMenuItem.isChecked = false
-                blurMenuItem.isChecked = false
+                disableBrushEffects()
                 return true
             }
             R.id.emboss -> {
@@ -146,10 +149,6 @@ class MainActivity : AppCompatActivity() {
                 paintView.blur()
                 return true
             }
-            R.id.clear -> {
-                showBrushSizeDialog()
-                return true
-            }
             R.id.help ->{
                 showHelpDialog()
                 return true
@@ -160,15 +159,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBrushSizeDialog(){
         val dial = AlertDialog.Builder(this)
-        val seek = SeekBar(this);
-        dial.setMessage("Brush size: ")
+        val seek = SeekBar(this)
         seek.max = 100
 
-        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        var viewLayout = layoutInflater.inflate(R.layout.activity_dialog, findViewById(R.id.layout_dialog))
+        viewLayout.sizeLabel.text = "Brush size: ${paintView.getStrokeWidth()}"
+        viewLayout.seekBar1.progress = paintView.getStrokeWidth()
+
+        viewLayout.seekBar1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 // Display the current progress of SeekBar
-                //dial.setMessage("Progress : $i")
+                viewLayout.sizeLabel.text = "Brush size : $i"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -181,11 +183,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         dial.setTitle("Set brush size")
-        dial.setView(seek)
+        dial.setView(viewLayout)
         dial.setCancelable(true)
         dial.setPositiveButton("Change"){
             _,_ ->
-            //changeSizeMethod
+            paintView.setStrokeWidth(viewLayout.seekBar1.progress)
         }
         dial.setNegativeButton("Calncel"){
             dialog,_ -> dialog.cancel()
@@ -219,15 +221,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openColorPicker() {
-        val colorPicker = AmbilWarnaDialog(this, paintView.getCurrentBrushColor(), object : AmbilWarnaDialog.OnAmbilWarnaListener {
-            override fun onCancel(dialog: AmbilWarnaDialog) {
-            }
+        if(!paintView.getIsEraserEnabled()){
+            val colorPicker = AmbilWarnaDialog(this, paintView.getCurrentBrushColor(), object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                override fun onCancel(dialog: AmbilWarnaDialog) {
+                }
 
-            override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
-                paintView.setBrushColor(color)
-            }
-        })
-        colorPicker.show()
+                override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
+                    paintView.setBrushColor(color)
+                }
+            })
+            colorPicker.show()
+        }
     }
 
 

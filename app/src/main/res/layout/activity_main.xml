@@ -27,6 +27,7 @@
             android:layout_alignBottom="@+id/paintView" android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" android:layout_alignRight="@+id/paintView">
 
+
         <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,6 +44,14 @@
                 android:id="@+id/EraserBrushButton"
                 app:fab_icon="@drawable/brush"
                 app:fab_size="mini"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_size="mini"
+                app:fab_colorPressed="@color/white_pressed"
+                android:id="@+id/BrushSizeButton"
+                app:fab_icon="@drawable/brushsize"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"

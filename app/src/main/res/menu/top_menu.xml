@@ -5,6 +5,5 @@
     <item android:title="normal" android:id="@+id/normal" android:checkable="false"/>
     <item android:title="emboss" android:id="@+id/emboss" android:checkable="true"/>
     <item android:title="blur" android:id="@+id/blur" android:checkable="true"/>
-    <item android:title="clear" android:id="@+id/clear"/>
     <item android:title="HELP" android:id="@+id/help"/>
 </menu>

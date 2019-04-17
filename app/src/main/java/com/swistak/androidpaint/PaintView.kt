@@ -15,18 +15,10 @@ import android.view.MotionEvent
 import android.view.View
 
 import java.util.ArrayList
-import android.content.ContextWrapper
 import android.app.Activity
 import android.os.Environment
-import androidx.appcompat.app.AppCompatActivity
-import java.io.File.separator
-import java.nio.file.Files.exists
-import android.os.Environment.getExternalStorageDirectory
-import android.os.Environment.MEDIA_MOUNTED
 import java.io.File
 import java.io.FileOutputStream
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
 import java.io.OutputStream
 import java.lang.Exception
 
@@ -181,7 +173,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     companion object {
 
-        var BRUSH_SIZE = 60
+        var BRUSH_SIZE = 30
         val DEFAULT_COLOR = Color.BLACK
         val DEFAULT_BG_COLOR = Color.WHITE
         private val TOUCH_TOLERANCE = 4f
@@ -228,13 +220,14 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun switchBetweenBrushAndEraser(){
         if(!isEraserEnabled){
             currentColor = backgroundCol
+            activity!!.disableBrushEffects()
             isEraserEnabled = true
         }
         else{
             currentColor = colorOfBrush
             isEraserEnabled = false
         }
-        activity!!.switchBrushAndEraserIcons(isEraserEnabled)
+        activity!!.switchBrushAndEraser(isEraserEnabled)
     }
 
     fun getCurrentBrushColor() : Int{
@@ -243,5 +236,17 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun setBrushColor(color : Int) {
         currentColor = color
+    }
+
+    fun getStrokeWidth(): Int{
+        return strokeWidth
+    }
+
+    fun setStrokeWidth(size : Int){
+        strokeWidth = size
+    }
+
+    fun getIsEraserEnabled() : Boolean{
+        return isEraserEnabled
     }
 }
