@@ -9,12 +9,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.appcompat.app.AlertDialog
 import android.text.InputType
+import android.view.View
 import android.widget.EditText
+import android.widget.SeekBar
 import yuku.ambilwarna.AmbilWarnaDialog
 
 
@@ -25,6 +26,8 @@ import yuku.ambilwarna.AmbilWarnaDialog
 class MainActivity : AppCompatActivity() {
 
     val REQUEST_WRITE_EXTERNAL = 1
+    private lateinit var embossMenuItem : MenuItem
+    private lateinit var blurMenuItem : MenuItem
 
 
     fun changeUndoArrowColor(){
@@ -43,18 +46,33 @@ class MainActivity : AppCompatActivity() {
         right_menu.collapse()
     }
 
-    var dialogClickListener: DialogInterface.OnClickListener =
-        DialogInterface.OnClickListener { dialog, which ->
-            when (which) {
-                DialogInterface.BUTTON_POSITIVE -> {
-                    paintView.clear()
-                    UndoButton.setIcon(R.drawable.undo_grey)
-                }
+    private fun showClearDialog(){
+        val dial = AlertDialog.Builder(this)
 
-                DialogInterface.BUTTON_NEGATIVE -> {
-                }
-            }
+        dial.setTitle("Warning!")
+        dial.setMessage("Are you sure to clear board?")
+        dial.setPositiveButton("Clear"){
+            _,_ ->
+            paintView.clear()
+            UndoButton.setIcon(R.drawable.undo_grey)
         }
+        dial.setNegativeButton("Cancel"){
+                dialog, _ -> dialog.cancel()
+        }
+        dial.show()
+    }
+    private fun showHelpDialog(){
+        val dial = AlertDialog.Builder(this)
+
+        dial.setTitle("Help")
+        dial.setMessage("You can clear the board by shaking your smartphone!")
+        dial.setCancelable(true)
+        dial.setPositiveButton("Got it"){
+            dialog,_ -> dialog.cancel()
+        }
+        dial.show()
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,11 +92,11 @@ class MainActivity : AppCompatActivity() {
             if(paintView.getPaths().size == 0)
                 UndoButton.setIcon(R.drawable.undo_grey)
         }
+
         ClearButton.setOnClickListener{
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show()
+            showClearDialog()
         }
+
         SaveButton.setOnClickListener {
             if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -89,9 +107,11 @@ class MainActivity : AppCompatActivity() {
             }
             showSavingFileDialog()
         }
+
         EraserBrushButton.setOnClickListener {
             paintView.switchBetweenBrushAndEraser()
         }
+
         ColorPickButton.setOnClickListener {
             openColorPicker()
         }
@@ -101,6 +121,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.top_menu, menu)
+        embossMenuItem = menu!!.findItem(R.id.emboss)
+        blurMenuItem = menu.findItem(R.id.blur)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -108,27 +130,68 @@ class MainActivity : AppCompatActivity() {
         when (item!!.itemId) {
             R.id.normal -> {
                 paintView.normal()
+                embossMenuItem.isChecked = false
+                blurMenuItem.isChecked = false
                 return true
             }
             R.id.emboss -> {
+                item.isChecked = !item.isChecked
+                blurMenuItem.isChecked = false
                 paintView.emboss()
                 return true
             }
             R.id.blur -> {
+                item.isChecked = !item.isChecked
+                embossMenuItem.isChecked = false
                 paintView.blur()
                 return true
             }
             R.id.clear -> {
-                Log.d("kappa","Clear button clicked")
-                paintView.clear()
+                showBrushSizeDialog()
                 return true
             }
-            R.id.undo ->{
-                paintView.undo()
+            R.id.help ->{
+                showHelpDialog()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showBrushSizeDialog(){
+        val dial = AlertDialog.Builder(this)
+        val seek = SeekBar(this);
+        dial.setMessage("Brush size: ")
+        seek.max = 100
+
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                // Display the current progress of SeekBar
+                //dial.setMessage("Progress : $i")
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                // Do something
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                // Do something
+            }
+        })
+
+        dial.setTitle("Set brush size")
+        dial.setView(seek)
+        dial.setCancelable(true)
+        dial.setPositiveButton("Change"){
+            _,_ ->
+            //changeSizeMethod
+        }
+        dial.setNegativeButton("Calncel"){
+            dialog,_ -> dialog.cancel()
+        }
+
+        dial.show()
     }
 
     private fun showSavingFileDialog(){
