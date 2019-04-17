@@ -18,7 +18,7 @@ import java.util.ArrayList
 import android.content.ContextWrapper
 import android.app.Activity
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import java.io.File.separator
 import java.nio.file.Files.exists
 import android.os.Environment.getExternalStorageDirectory

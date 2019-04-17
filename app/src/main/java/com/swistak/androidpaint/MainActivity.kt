@@ -1,7 +1,7 @@
 package com.swistak.androidpaint
 
 import android.Manifest
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -11,8 +11,8 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AlertDialog
 import android.text.InputType
 import android.widget.EditText
 import yuku.ambilwarna.AmbilWarnaDialog
